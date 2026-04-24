@@ -17,7 +17,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login(form.username, form.password);
-      const { access, refresh, user } = res;
+      const { access, refresh, user } = res.data;
 
       localStorage.setItem("access_token", access);
       localStorage.setItem("refresh_token", refresh);
@@ -25,8 +25,12 @@ export default function LoginPage() {
 
       toast.success(`Welcome back, ${user.first_name || user.username}!`);
       navigate("/dashboard");
-    } catch {
-      toast.error("Invalid credentials. Please try again.");
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { detail?: string } } };
+      const msg =
+        axiosErr?.response?.data?.detail ||
+        "Invalid credentials. Please try again.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -101,7 +105,7 @@ export default function LoginPage() {
                 onChange={(e) =>
                   setForm((p) => ({ ...p, username: e.target.value }))
                 }
-                placeholder="e.g. admin"
+                placeholder="e.g. allen"
                 required
               />
             </div>
@@ -144,8 +148,9 @@ export default function LoginPage() {
             </p>
             <div className="space-y-1">
               {[
-                { role: "Admin", user: "admin", pw: "admin123" },
+                { role: "Admin", user: "allen", pw: "admin123" },
                 { role: "Agent", user: "john_agent", pw: "agent123" },
+                { role: "Agent", user: "mary_agent", pw: "agent123" },
               ].map((c) => (
                 <button
                   key={c.user}

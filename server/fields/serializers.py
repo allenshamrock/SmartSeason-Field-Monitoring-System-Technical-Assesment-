@@ -11,12 +11,12 @@ class FieldUpdateSerializer(serializers.ModelSerializer):
         fields = ['id','stage','notes','created_at','agent_name','agent']
         read_only_fields = ['id', 'agent','created_at']
 
-        def get_agent_name(self,obj):
+    def get_agent_name(self,obj):
             if obj.agent:
                 return f"{obj.agent.first_name} {obj.agent.last_name}".strip() or obj.agent.username
             return  None
 
-        def create(self,validated_data):
+    def create(self,validated_data):
             validated_data['agent'] =self.context['request'].user
             return super().create(validated_data)
 
@@ -35,16 +35,16 @@ class FieldSerializer(serializers.ModelSerializer):
                   ]
         read_only_fields = ['id','status','created_by','created_at','updated_at']
 
-        def  get_recent_updates(self,obj):
+    def  get_recent_updates(self,obj):
             #Get the 3 most recent updates for the field
             updates = obj.updates.all()[:3]
             return FieldUpdateSerializer(updates,many=True).data
         
-        def get_days_since_planting(self,obj):
+    def get_days_since_planting(self,obj):
             return (timezone.now().date() - obj.planting_date).days
 
 
-        def create(self,validated_data):
+    def create(self,validated_data):
             validated_data['created_by'] = self.context['request'].user
             return super().create(validated_data)
 

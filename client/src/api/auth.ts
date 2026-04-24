@@ -1,18 +1,15 @@
 import api from "./client";
-import { type User } from "../types";
+import type { User } from "../types";
 
 export const login = (username: string, password: string) =>
-  api("/auth/login/", {
-    method: "POST",
-    body: JSON.stringify({ username, password }),
-  }) as Promise<{ access: string; refresh: string; user: User }>;
+  api.post<{ access: string; refresh: string; user: User }>("/auth/login/", {
+    username,
+    password,
+  });
 
 export const register = (data: Partial<User> & { password: string }) =>
-  api("/auth/register/", {
-    method: "POST",
-    body: JSON.stringify(data),
-  }) as Promise<User>;
+  api.post<User>("/auth/register/", data);
 
-export const getMe = () => api("/auth/me/") as Promise<User>;
+export const getMe = () => api.get<User>("/auth/me/");
 
-export const getAgents = () => api("/auth/agents/") as Promise<User[]>;
+export const getAgents = () => api.get<User[]>("/auth/agents/");

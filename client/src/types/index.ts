@@ -3,6 +3,7 @@ export type Stage = "planted" | "growing" | "ready" | "harvested";
 export type FieldStatus = "active" | "at_risk" | "completed";
 
 export interface User {
+  data(data: any): void | PromiseLike<void>;
   id: number;
   username: string;
   email: string;
@@ -38,7 +39,7 @@ export interface Field {
   created_at: string;
   updated_at: string;
   expected_harvest_date?: string;
-  last_update_at?: string;
+  last_updated_at?: string;
   recent_updates: FieldUpdate[];
   days_since_planting: number;
 }

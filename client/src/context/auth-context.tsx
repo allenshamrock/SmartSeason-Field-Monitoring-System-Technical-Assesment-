@@ -3,9 +3,9 @@ import {
   useContext,
   useState,
   useEffect,
- type ReactNode,
+  type ReactNode,
 } from "react";
-import { type User } from "../types";
+import type { User } from "../types";
 import { getMe } from "../api/auth";
 
 interface AuthContextType {
@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem("access_token");
     if (token) {
       getMe()
-        .then((res) => setUser(res.data))
+        .then((res) => setUser(res.data)) // axios → res.data is the User
         .catch(() => {
           localStorage.clear();
         })

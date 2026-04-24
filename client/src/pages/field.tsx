@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { type Field } from "../types";
-
+import type { Field } from "../types";
 import {
   Plus,
   Search,
@@ -24,10 +23,12 @@ export default function FieldsPage() {
   const [showForm, setShowForm] = useState(false);
 
   const fetchFields = () => {
+    setLoading(true);
     const params: Record<string, string> = {};
     if (stageFilter) params.stage = stageFilter;
     getFields(params)
-      .then((r) => setFields(r.data))
+      .then((res) => setFields(res.data)) // axios → res.data is Field[]
+      .catch(() => setFields([]))
       .finally(() => setLoading(false));
   };
 

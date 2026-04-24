@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { type Field,type FieldUpdate } from "../types";
+import type { Field, FieldUpdate } from "../types";
 import toast from "react-hot-toast";
 import {
   ArrowLeft,
@@ -14,7 +14,12 @@ import {
   Clock,
 } from "lucide-react";
 import { useAuth } from "../context/auth-context";
-import { createFieldUpdate, deleteField, getField, getFieldUpdates } from "../api/field";
+import {
+  createFieldUpdate,
+  deleteField,
+  getField,
+  getFieldUpdates,
+} from "../api/field";
 import { StageBadge, StatusBadge } from "../components/status-badge";
 import FieldFormModal from "../components/field-form-modal";
 
@@ -40,9 +45,12 @@ export default function FieldDetailPage() {
         getField(fieldId),
         getFieldUpdates(fieldId),
       ]);
+      // axios → .data on each response
       setField(fieldRes.data);
       setUpdates(updatesRes.data);
       setUpdateForm((f) => ({ ...f, stage: fieldRes.data.current_stage }));
+    } catch {
+      toast.error("Failed to load field data");
     } finally {
       setLoading(false);
     }
@@ -106,6 +114,8 @@ export default function FieldDetailPage() {
       >
         <ArrowLeft size={15} /> All fields
       </Link>
+
+      {/* Field header card */}
       <div className="card p-6">
         <div className="flex items-start justify-between flex-wrap gap-4">
           <div>
@@ -179,6 +189,7 @@ export default function FieldDetailPage() {
         )}
       </div>
 
+      {/* Post update (agents + admin) */}
       {canUpdate && (
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
@@ -236,6 +247,7 @@ export default function FieldDetailPage() {
         </div>
       )}
 
+      {/* Update history */}
       <div className="card p-6">
         <h3 className="font-display font-semibold text-stone-700 mb-4">
           Update History

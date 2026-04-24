@@ -70,7 +70,7 @@ class FieldUpdateListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        field_id = self.kwargs.get['field_id']
+        field_id = self.kwargs.get('field_id')
         query_set = FieldUpdate.objects.filter(field_id=field_id).select_related('agent')
         if not user.is_admin():
             query_set = query_set.filter(field__assigned_agent=user)
@@ -78,7 +78,7 @@ class FieldUpdateListCreateView(generics.ListCreateAPIView):
         return query_set
     
     def perform_create(self,serializer):
-        field_id = self.kwargs.get['field_id']
+        field_id = self.kwargs.get('field_id')
         field = Field.objects.get(pk=field_id)
         user = self.request.user
 
@@ -105,32 +105,31 @@ class DashboardView(APIView):
 
         stage_breakdown = {}
         for f in fields:
-            stage_breakdown[f.current_stage] = stage_breakdown.get(f.current_stage,0)+1
+            stage_breakdown[f.current_stage] = stage_breakdown.get(f.current_stage, 0) + 1
 
-            if user.is_admin():
-                recent_updates = FieldUpdate.objects.all().select_related('agent','field')[:10]
-            
-            else:
-                recent_updates = FieldUpdate.objects.filter(field__assigned_agent=user).select_related('agent','field')[:10]
+        if user.is_admin():
+            recent_updates = FieldUpdate.objects.all().select_related('agent','field')[:10]
+        else:
+            recent_updates = FieldUpdate.objects.filter(field__assigned_agent=user).select_related('agent','field')[:10]
 
-            #per agent summary for admin
-            agent_summary= []
-            if user.is_admin():
-                agents = UserModel.objects.filter(role='agents')
+        agent_summary = []
+        if user.is_admin():
+            agents = UserModel.objects.filter(role='agent')  # also fix this
+            for agent in agents:
+                agent_fields = fields.filter(assigned_agent=agent)
                 agent_summary.append({
                     'agent_id': agent.id,
                     'agent_name': f"{agent.first_name} {agent.last_name}".strip() or agent.username,
-                    'total':len(agent_fields),
+                    'total': len(agent_fields),
                     'at_risk': sum(1 for f in agent_fields if f.status == 'at_risk'),
-
                 })
 
-            return Response({
-                'total_fields': len(fields),
-                'active_count':active_count,
-                'at_risk_count':at_risk_count,
-                'completed_count':completed_count,
-                'stage_breakdown':stage_breakdown,
-                'recent_updates':FieldUpdateSerializer(recent_updates,many=True).data,
-                'agent_summary':agent_summary if user.is_admin() else []
-            })
+        return Response({
+            'total_fields': len(fields),
+            'active_count': active_count,
+            'at_risk_count': at_risk_count,
+            'completed_count': completed_count,
+            'stage_breakdown': stage_breakdown,
+            'recent_updates': FieldUpdateSerializer(recent_updates, many=True).data,
+            'agent_summary': agent_summary if user.is_admin() else []
+        })

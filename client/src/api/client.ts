@@ -1,62 +1,41 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+import axios from "axios";
 
-const api = async (url:any, options = {}, retry = true) => {
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
+  headers: { "Content-Type": "application/json" },
+});
+
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
-
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  try {
-    const response = await fetch(`${BASE_URL}${url}`, {
-      ...options,
-      headers,
-    });
-
-    // Handle 401 (token expired)
-    if (response.status === 401 && retry) {
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const original = error.config;
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
       const refresh = localStorage.getItem("refresh_token");
-
       if (refresh) {
-        const refreshRes = await fetch(`${BASE_URL}/auth/refresh/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refresh }),
-        });
-
-        if (refreshRes.ok) {
-          const data = await refreshRes.json();
-          const newAccess = data.access;
-
-          localStorage.setItem("access_token", newAccess);
-
-          // retry original request with new token
-          return api(url, options, false);
-        } else {
+        try {
+          const res = await axios.post(
+            `${api.defaults.baseURL}/auth/refresh/`,
+            { refresh },
+          );
+          const { access } = res.data;
+          localStorage.setItem("access_token", access);
+          original.headers.Authorization = `Bearer ${access}`;
+          return api(original);
+        } catch {
           localStorage.clear();
           window.location.href = "/login";
-          return;
         }
       }
     }
-
-    // Handle non-OK responses
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw { status: response.status, data: errorData };
-    }
-
-    return response.json();
-  } catch (error) {
     return Promise.reject(error);
-  }
-};
+  },
+);
 
-export default api
+export default api;

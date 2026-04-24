@@ -43,7 +43,7 @@ class Field(models.Model):
             return 'at_risk'
         
         #At risk if no field update in 14days
-        if self.last_update_at:
+        if self.last_updated_at:
             days_since_updates = (timezone.now() - self.last_updated_at).days
             if days_since_updates > 14:
                 return 'at_risk'
