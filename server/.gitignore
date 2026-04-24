@@ -12,3 +12,4 @@ build
 *.pot
 *.pyc       
 venv
+.env

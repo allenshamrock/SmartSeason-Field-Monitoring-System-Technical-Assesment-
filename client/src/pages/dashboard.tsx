@@ -111,7 +111,7 @@ export default function DashboardPage() {
         <div>
           <h2 className="font-display text-2xl font-bold text-stone-800">
             Good {new Date().getHours() < 12 ? "morning" : "afternoon"},{" "}
-            {displayName?.split(" ")[0]} 👋
+            {displayName?.split(" ")[0]} 
           </h2>
           <p className="text-stone-500 text-sm mt-1">
             {isAdmin
