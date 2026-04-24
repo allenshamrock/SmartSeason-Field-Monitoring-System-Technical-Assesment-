@@ -6,7 +6,6 @@ import {
   Map,
   LogOut,
   Menu,
-  X,
   Sprout,
   User,
   ChevronDown,
