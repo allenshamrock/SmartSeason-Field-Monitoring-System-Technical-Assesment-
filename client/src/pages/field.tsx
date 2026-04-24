@@ -27,7 +27,7 @@ export default function FieldsPage() {
     const params: Record<string, string> = {};
     if (stageFilter) params.stage = stageFilter;
     getFields(params)
-      .then((res) => setFields(res.data)) // axios → res.data is Field[]
+      .then((res) => setFields(res.data)) 
       .catch(() => setFields([]))
       .finally(() => setLoading(false));
   };

@@ -189,7 +189,6 @@ export default function FieldDetailPage() {
         )}
       </div>
 
-      {/* Post update (agents + admin) */}
       {canUpdate && (
         <div className="card p-6">
           <div className="flex items-center justify-between mb-4">
@@ -247,7 +246,6 @@ export default function FieldDetailPage() {
         </div>
       )}
 
-      {/* Update history */}
       <div className="card p-6">
         <h3 className="font-display font-semibold text-stone-700 mb-4">
           Update History

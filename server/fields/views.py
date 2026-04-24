@@ -17,7 +17,7 @@ class FieldListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.is_admin():
-            queryset = Field.object.all()
+            queryset = Field.objects.all()
         
         else:
             queryset = Field.objects.filter(assigned_agent=user)
@@ -31,7 +31,7 @@ class FieldListCreateView(generics.ListCreateAPIView):
             if crop:    
                 queryset = queryset.filter(crop_type__icontains=crop)
             
-            return queryset.select_related('assigned_agent','created_by')
+        return queryset.select_related('assigned_agent','created_by')
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -114,7 +114,7 @@ class DashboardView(APIView):
 
         agent_summary = []
         if user.is_admin():
-            agents = UserModel.objects.filter(role='agent')  # also fix this
+            agents = UserModel.objects.filter(role='agent')  
             for agent in agents:
                 agent_fields = fields.filter(assigned_agent=agent)
                 agent_summary.append({
