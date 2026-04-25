@@ -160,7 +160,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://smart-season-field-monitoring-syste-chi.vercel.app'
 ]
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = False
 
 LANGUAGE_CODE = 'en-us'
 
