@@ -99,13 +99,16 @@ SIMPLE_JWT = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = False                        
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:5174',
     'https://smart-season-field-monitoring-syste-chi.vercel.app',
+    'https://smart-season-field-monitoring-syste-nu.vercel.app',  
+    'https://smart-season-field-monitori-git-6c3a5f-allen-shamrocks-projects.vercel.app',
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'^https://.*\.vercel\.app$',  
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
