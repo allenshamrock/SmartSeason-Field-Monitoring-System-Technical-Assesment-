@@ -30,8 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    ".onrender.com",
-    ".vercel.app",
+    "smartseason-field-monitoring-system-anbl.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
